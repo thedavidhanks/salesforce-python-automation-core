@@ -9,18 +9,18 @@ When using this project to begin a new python based Salesforce automate,
 - Remove the remotes.
 - Create your own remotes
 
-2. [Create a JWT to connect with](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)
+2. [Create a JSON Web Token (JWT)](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)
+- Add the server.key file to the location file to resources/keys directory
 3. [Create a connect app in your org](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
-4. Add your server.key .  Add the key file to the location file to resources/keys directory
+- 
+4. Get the Consume Key (Setup -> App Manager -> View (from App drop down) -> API - Manage Consume Details)
+5. Ensure that a permission set is assigned to the app and {SF_USERNAME}
 5. Setup .env file
-copy .env-tempalte as .env and setup the environment variables
-
-- **SSL_SERVER_KEY** - an ssl key generated used by the sf org --client-id param    
-  - [create a cert](https://help.salesforce.com/s/articleView?id=xcloud.security_keys_creating.htm&type=5)  
-  - [sf cmd](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
-- **CLIENT_ID** - consumer key from connect app
+copy .env-tempalate as .env and setup the environment variables
+- **SF_USERNAME** - username for your salesforce org
 - **SERVER_KEY_FILE** - name and location of the of the JWT key file used to create the signing cert.
 - [Read more about it](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)
+- **CLIENT_ID** - consumer key from connect app
 Example
 ```
 SF_USERNAME=user@rice.edu
@@ -50,3 +50,5 @@ In order to use the container you'll need to do the following:
 # Updating the project
 Fork the project, make some changes, initiate a pull request, wait, wait, wait...
 
+# References
+  [sf cmd](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)

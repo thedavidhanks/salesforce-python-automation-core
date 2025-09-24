@@ -20,7 +20,7 @@ def sf_login(user=None, client_id=None, key_file=None):
 		sf_login('user@example.com', 'CLIENT_ID', './resources/keys/server.key')
 	"""	
 
-	load_dotenv()
+	load_dotenv(dotenv_path='resources/secrets/.env')
 
 	if user is None:
 		user = os.getenv("SF_USERNAME")
