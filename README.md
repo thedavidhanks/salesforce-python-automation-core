@@ -19,8 +19,7 @@ When using this project to begin a new python based Salesforce automation,
 6. Setup .env file
 copy .env-tempalate as .env and setup the environment variables
     - **SF_USERNAME** - username for your salesforce org  
-    - **SERVER_KEY_FILE** - name and location of the of the JWT key file used to create the signing cert.  
-    - [Read more about it](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)  
+    - **SERVER_KEY_FILE** - name and location of the of the JWT key file used to create the signing cert.  [Read more about it](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_key_and_cert.htm)  
     - **CLIENT_ID** - consumer key from connect app  
 Example
 ```
@@ -51,5 +50,5 @@ In order to use the container you'll need to do the following:
 Fork the project, make some changes, initiate a pull request, wait, wait, wait...
 
 # References
-  [sf cmd](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_unified.htm)
+  [sf cmd](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_unified.htm)   
   [sf login with JWT](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
