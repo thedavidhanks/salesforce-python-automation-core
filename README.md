@@ -53,5 +53,5 @@ Fork the project, make some changes, initiate a pull request, wait, wait, wait..
   [sf cmd](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_unified.htm)   
   [sf login with JWT](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_org_commands_unified.htm#cli_reference_org_login_jwt_unified)
 
-# Credit
+# Credits
   This repository was started by using [https://github.com/thedavidhanks/salesforce-python-automation-core](https://github.com/thedavidhanks/salesforce-python-automation-core)
