@@ -3,6 +3,7 @@ import os
 import subprocess
 
 from dotenv import load_dotenv
+from utils.logger import logger
 
 # Create a function that will run the terminal command sf org login jwt.  
 #   utilize variables specified by .env
@@ -50,11 +51,11 @@ def sf_logout():
 	cmd = ["sf", "org", "logout", "--target-org", "prod", "--no-prompt"]
 	try:
 		subprocess.run(cmd, check=True)
-		print("Logged out successfully.")
+		logger.info("Logged out successfully.")
 	except subprocess.CalledProcessError as e:
-		print(f"An error occurred while logging out: {e}")
+		logger.error(f"An error occurred while logging out: {e}")
 
-def sf_query(query: str, verbosity: int=1):
+def sf_query(query: str):
 	"""
 	Runs a SOQL query against the Salesforce org and returns the results as a JSON object.
 
@@ -69,15 +70,13 @@ def sf_query(query: str, verbosity: int=1):
 	try:
 		result = subprocess.run(cmd, check=True, capture_output=True, text=True)
 		data = json.loads(result.stdout)
-		if verbosity >= 5:
-			print(f"Query result: {data}")
+		logger.debug(f"Query result: {data}")
 		return data
 	except subprocess.CalledProcessError as e:
-		if verbosity >= 1:
-			print(f"An error occurred while running the query: {e}")
+		logger.error(f"An error occurred while running the query: {e}")
 		return {}
 
-def get_record_count(object_name: str, verbosity: int=1):
+def get_record_count(object_name: str):
 	"""
 	Retrieves the count of records for a specified object in the Salesforce org.
 
@@ -92,12 +91,12 @@ def get_record_count(object_name: str, verbosity: int=1):
 		int: The count of records in the object, or None if an error occurs.
 	"""
 	query = f"SELECT COUNT() FROM {object_name}"
-	result = sf_query(query, verbosity=verbosity)
+	result = sf_query(query)
 	if result and 'totalSize' in result.get('result', {}):
 		return result['result']['totalSize']
 	return None
 
-def download_object(object_name: str, folder: str="", file_type: str="csv", check_exists: bool=True, saveFields: bool=False, get_id: bool=False, verbosity: int=1, saveEmptyObjects: bool=False):
+def download_object(object_name: str, folder: str="", file_type: str="csv", check_exists: bool=True, saveFields: bool=False, get_id: bool=False, saveEmptyObjects: bool=False):
 	"""
 	Downloads csv of specified object from the Salesforce org.
 
@@ -114,25 +113,21 @@ def download_object(object_name: str, folder: str="", file_type: str="csv", chec
 		isReal = verify_object_in_org(object_name)
 
 		if isReal:
-			if verbosity >= 5:
-				print(f"download_object: Object {object_name} exists in the org. Proceeding with download.")
+			logger.debug(f"download_object: Object {object_name} exists in the org. Proceeding with download.")
 		if not isReal:
-			if verbosity >= 1:
-				print(f"download_object: Object {object_name} does not exist in the org. Please verify the object name.")
+			logger.warning(f"download_object: Object {object_name} does not exist in the org. Please verify the object name.")
 			return False
 	
 	if not saveEmptyObjects:
 		# Check if the object has any records
-		record_count = get_record_count(object_name, verbosity=verbosity)
+		record_count = get_record_count(object_name)
 		if record_count is None or record_count == 0:
-			if verbosity >= 2:
-				print(f"download_object: Object {object_name} has no records. Skipping download.")
+			logger.warning(f"download_object: Object {object_name} has no records. Skipping download.")
 			return False
 	
 	field_list = get_fields_on_obj(object_name, saveJSON=saveFields)
 	if not field_list:
-		if verbosity >= 1:
-			print(f"download_object: No fields found for object {object_name}.  Download aborted.")
+		logger.warning(f"download_object: No fields found for object {object_name}.  Download aborted.")
 		return False
 	# Create the query string with all fields
 	fields_query = ', '.join(field_list)
@@ -151,9 +146,9 @@ def download_object(object_name: str, folder: str="", file_type: str="csv", chec
 	# async_wait_cmd = "--async" if get_id else "--wait 1"
 	cmd = ["sf", "data", "export", "bulk", "--query", query, "--output-file", f"{folder}/{object_name}.{file_type}","--result-format", file_type]
 
-	if verbosity >= 5:
-		print(f"$: {' '.join(cmd)}")
-		print(f"\tDownloading {object_name} as {file_type} to {folder}/{object_name}.{file_type}")
+	
+	logger.debug(f"Running command: {' '.join(cmd)}")
+	logger.debug(f"Downloading {object_name} as {file_type} to {folder}/{object_name}.{file_type}")
 
 	try:
 		# Run the command
@@ -169,11 +164,9 @@ def download_object(object_name: str, folder: str="", file_type: str="csv", chec
 			subprocess.run(cmd, check=True)
 		
 		# Print the output of the command
-		if verbosity >= 3:
-			print(f"Object {object_name} downloaded successfully as {file_type}.")
+		logger.info(f"Object {object_name} downloaded successfully as {file_type}.")
 	except subprocess.CalledProcessError as e:
-		if verbosity >= 1:
-			print(f"An error occurred while downloading the object {object_name}: {e}")
+		logger.error(f"An error occurred while downloading the object {object_name}: {e}")
 		return False
 	
 def extract_job_id(output: str) -> str:
@@ -196,7 +189,7 @@ def extract_job_id(output: str) -> str:
     if match:
         return match.group(1)
     
-    return None
+    return ""
 
 def get_job_status(job_id: str, verbosity: int = 1):
     """
